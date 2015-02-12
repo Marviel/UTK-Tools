@@ -1,0 +1,47 @@
+#!/usr/local/bin/bash
+usage()
+{
+cat << EOF
+usage: $0 number options
+Runs Dr. James Plank's gradescript in the current directory,
+then compares correct and test stdout files produced (using sdiff)
+
+OPTIONS:
+	-h      Show this message
+	-e      Compare correct and test.
+	-v      Verbose
+EOF
+}
+
+SHOERROR=0
+
+while getopts :h:e:v: OPTION; do
+	case "${OPTION}" in
+		h)
+			usage
+			exit 1
+			;;
+		e)
+			echo "SHO"
+			SHOERROR=1
+			echo "SHO"
+			echo $SHOERROR
+			;;
+		v)
+			VERBOSE=1
+			;;
+	esac
+done
+
+if [[ -z $1 ]]; then
+	usage
+	exit 1
+fi
+
+./gradescript $1
+
+if [ $SHOERROR -ne 1 ]; then
+	sdiff  tmp-$1-correct-stdout.txt tmp-$1-\test-stdout.txt
+else
+	sdiff  tmp-$1-correct-stderr.txt tmp-$1-\test-stderr.txt
+fi
