@@ -2,7 +2,7 @@
 usage()
 {
 cat << EOF
-usage: $0 number options
+usage: $0 [problem number] [-options]
 Runs Dr. James Plank's gradescript in the current directory,
 then compares correct and test stdout files produced (using sdiff)
 
