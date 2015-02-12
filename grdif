@@ -1,8 +1,15 @@
 #!/usr/local/bin/bash
+#Author: Luke Bechtel
+#Supervisor: N/A
+#Date: Thu, Feb 12 2015
+#Summary:
+#		Runs Dr. James Plank's gradescript in the current directory,
+#   then compares correct and test stdout files produced (using sdiff)
+
 usage()
 {
 cat << EOF
-usage: $0 [problem number] [-options]
+usage: $0 [-options (all one hyphen)] [problem number]
 Runs Dr. James Plank's gradescript in the current directory,
 then compares correct and test stdout files produced (using sdiff)
 
@@ -13,25 +20,24 @@ OPTIONS:
 EOF
 }
 
-SHOERROR=0
+SHOWERROR=0
 
-while getopts :h:e:v: OPTION; do
+while getopts hev: OPTION; do
 	case "${OPTION}" in
 		h)
 			usage
 			exit 1
 			;;
 		e)
-			echo "SHO"
-			SHOERROR=1
-			echo "SHO"
-			echo $SHOERROR
+			SHOWERROR=1
 			;;
 		v)
 			VERBOSE=1
 			;;
 	esac
 done
+
+shift $(( OPTIND - 1 ))
 
 if [[ -z $1 ]]; then
 	usage
@@ -40,7 +46,7 @@ fi
 
 ./gradescript $1
 
-if [ $SHOERROR -ne 1 ]; then
+if [ $SHOWERROR -ne 1 ]; then
 	sdiff  tmp-$1-correct-stdout.txt tmp-$1-\test-stdout.txt
 else
 	sdiff  tmp-$1-correct-stderr.txt tmp-$1-\test-stderr.txt
